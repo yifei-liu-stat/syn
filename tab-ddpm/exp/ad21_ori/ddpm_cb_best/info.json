@@ -1,0 +1,33 @@
+{
+    "name": "ad21",
+    "id": "ad21--default",
+    "task_type": "regression",
+    "n_num_feautures": 20,
+    "n_cat_features": 0,
+    "train_size": 332,
+    "val_size": 83,
+    "test_size": 47,
+    "y_name": "APBB1",
+    "X_names": [
+        "APOE",
+        "APP",
+        "ATP5F1",
+        "CAPN1",
+        "CAPN2",
+        "CASP3",
+        "CASP8",
+        "CDK5R1",
+        "COX7A2L",
+        "FADD",
+        "GAPDH",
+        "GSK3B",
+        "ITPR2",
+        "LPL",
+        "LRP1",
+        "NDUFA2",
+        "NDUFV3",
+        "PSEN1",
+        "SDHC",
+        "TNFRSF1A"
+    ]
+}

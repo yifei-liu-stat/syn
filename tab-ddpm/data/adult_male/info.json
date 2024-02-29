@@ -1,0 +1,1 @@
+{"name": "Dataset name", "id": "Dataset id", "task_type": "binclass", "n_num_features": 6, "n_cat_features": 7, "test_size": 0, "train_size": 32617, "val_size": 32}
