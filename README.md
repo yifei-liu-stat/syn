@@ -59,7 +59,7 @@ python imdb_distilbert.py --predict
 python imdb_lstm.py
 ```
 
-## Regression Simulation with Tabular Data
+### Regression Simulation with Tabular Data
 
 Compare with traditional approach (CatBoost) with different $\sigma$ in the underlying model.
 ```bash
