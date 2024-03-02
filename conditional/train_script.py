@@ -23,8 +23,9 @@ torch.cuda.manual_seed(seed)
 
 
 # Generate simulated data #
+sigma = 0.2
 n_samples = 3000
-true_sampler = TrueSampler(sigma=0.2)
+true_sampler = TrueSampler(sigma=sigma)
 X, y = true_sampler.sample(n_samples)
 yx = np.concatenate([y[:, None], X], axis=1)
 

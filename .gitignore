@@ -1,0 +1,11 @@
+
+
+# example: sentiment analysis
+sentiment/ckpt/*
+sentiment/data/*
+sentiment/lightning_logs/**/*
+sentiment/result/pred_dict.pkl
+
+
+# exceptions
+!**/.gitkeep

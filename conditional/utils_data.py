@@ -22,16 +22,12 @@ class TrueSampler:
             + 0.1 * X[:, 6]
         )
 
-        # test a challenging model #
-        # self.sigma will not be used in this case
-        sigma_x = 0.4 * X[:, 0]
-        y = mean_vector + sigma_x * e
-        # end of test #
+        y = mean_vector + self.sigma * e
 
         print("X shape: ", X.shape)
         print("y shape: ", y.shape)
 
         if return_mean:
-            return X, y, mean_vector, sigma_x
+            return X, y, mean_vector
         else:
             return X, y
