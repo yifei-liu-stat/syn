@@ -5,8 +5,6 @@ import sys
 import time
 from tqdm import tqdm
 
-sys.path.insert(0, "../tab-ddpm/tab_ddpm/")
-from utils_pass import perturb_pass_gaussian_laplace, perfect_permute
 
 
 class MyDDPM(nn.Module):
@@ -209,55 +207,3 @@ def generate_imputation(
 
     return x
 
-
-def generate_pass(ddpm, yx_norm, perturbation_size=0, device=None):
-    """
-    Generate a PASS sample based on rank matching with yx on latent space.
-    """
-
-    n_samples, tabular_dim = yx_norm.shape
-
-    with torch.no_grad():
-        if device is None:
-            device = ddpm.device
-
-        # Starting from random noise
-        x = torch.randn_like(yx_norm)
-
-        # Rank matching
-        x = perturb_pass_gaussian_laplace(x, perturbation_size)
-        print("Begin matching ranks ...")
-        start = time.time()
-        x, _ = perfect_permute(x, yx_norm)
-        x = torch.tensor(x, dtype=torch.float32).to(device)
-        print("Rank matching done in {:.2f} seconds.".format(time.time() - start))
-
-        looper = tqdm(
-            enumerate(list(range(ddpm.n_steps))[::-1]), total=ddpm.n_steps, leave=False
-        )
-        for idx, t in looper:
-            # Estimating noise to be removed
-            time_tensor = (torch.ones(n_samples) * t).to(device).long()
-            eta_theta = ddpm.backward(x, time_tensor)
-
-            alpha_t = ddpm.alphas[t]
-            alpha_t_bar = ddpm.alpha_bars[t]
-
-            # Denoising
-            x = (1 / alpha_t.sqrt()) * (
-                x - (1 - alpha_t) / (1 - alpha_t_bar).sqrt() * eta_theta
-            )
-
-            if t > 0:
-                z = torch.randn(n_samples, tabular_dim).to(device)
-
-                # sigma_t squared = beta_t
-                beta_t = ddpm.betas[t]
-                sigma_t = beta_t.sqrt()
-
-                # Adding some more noise like in Langevin Dynamics fashion
-                x = x + sigma_t * z
-
-            looper.set_description(f"Imputation at step {t}")
-
-    return x

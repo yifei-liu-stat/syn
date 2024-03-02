@@ -22,15 +22,20 @@ import pickle
 from tqdm import tqdm
 import joblib
 
-from utils_data import TrueSampler
-from utils_model import MLPDiffusionContinuous
-from ddpm import MyDDPM, training_loop, generate_samples, generate_imputation
+import argparse
+
+import os
+
+
+from utils.utils_data import TrueSampler
+from utils.utils_model import MLPDiffusionContinuous
+from utils.ddpm import MyDDPM, training_loop, generate_imputation
 
 
 import sys
+REPO_DIR = os.environ.get("REPO_DIR")
 
-sys.path.insert(0, "../tab-ddpm/pass-inference/syninf/")
-from utils_viz import plot_distribution, compare_distributions_grid, heatmap_correlation
+sys.path.insert(0, os.path.join(REPO_DIR, "syninf/utils"))
 from utils_syninf import catboost_pred_model, test_rmse
 
 
@@ -40,11 +45,18 @@ torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
 
+parser = argparse.ArgumentParser(description="Ablation study for comparing Syn-Slm versus CatBoost (traditional) on synthetic tabular data")
+parser.add_argument("--sigma", type = float, default = 0.2)
+parser.add_argument("--device", type = str, default = "cuda:0")
+args = parser.parse_args()
+
 ##################### Model Training #####################
 
-device = "cuda:5"
-sigma = 0.2
+device = args.device
+sigma = args.sigma
 n_samples = 3000
+
+print(f"Configuration: sigma = {sigma} on device {device}")
 
 # Generate simulated data #
 true_sampler = TrueSampler(sigma=sigma)
@@ -179,6 +191,6 @@ rmse = test_rmse(model_fit, df_test, columns_names[1:])
 
 
 ##################### Results #####################
-print("Configuration: sigma = {sigma}")
+print(f"Configuration: sigma = {sigma}")
 print(f"RMSE with Syn-Slm: {np.mean(rmse_list)} +/- {np.std(rmse_list)}")
 print("RMSE on the test set for traditional approach:", rmse)
