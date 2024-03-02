@@ -9,8 +9,6 @@ import math
 
 import numpy as np
 from .utils import *
-from .utils_pass import *
-
 import lib
 import os
 import timeit
@@ -938,99 +936,6 @@ class GaussianMultinomialDiffusion(torch.nn.Module):
         z_norm = torch.randn((b, self.num_numerical_features), device=device)
         z_uniform = None
 
-        # PASS with refeernce sample path pertrub_dict['testdatapath'] (if perturb_dict is not None)
-        if perturb_dict is not None:
-            X_num = torch.tensor(
-                dataset.X_num["test"], dtype=torch.float32, device=device
-            )
-            X_cat = torch.zeros(
-                (X_num.shape[0], 0), device=device
-            )  # empty if no categorical features
-            z_uniform = torch.zeros(
-                (b, 0), device=device
-            ).float()  # empty if no categorical features
-            if has_cat:
-                # one-hot encoding if categorical features exist
-                X_cat = torch.tensor(dataset.X_cat["test"], device=device)
-                X_cat = index_to_onehot(X_cat, self.num_classes)
-                z_uniform = torch.rand_like(X_cat, device=device)
-
-            testdata = torch.cat(
-                [X_num, X_cat], dim=1
-            )  # (b, self.num_numerical_features + self.num_onehot_features [optional + 1])
-
-            assert (
-                testdata.shape[0] == b
-            ), f"Number of samples in test data does not match number of samples to be generated, set batch_size=num_samples={testdata.shape[0]}."
-            z_combined = torch.cat([z_norm, z_uniform], dim=1)
-
-            assert (
-                testdata.shape[1] == z_combined.shape[1]
-            ), f"Number of features in test data ({testdata.shape[1]}) does not match number of features in z_combined ({z_combined.shape[1]})."
-
-            # average distance between the latents and the test data, without rank matching and perturbation
-            distance_latent = torch.norm(z_combined - testdata, dim=1).mean()
-            distance_dict["distance_latent"] = distance_latent
-
-            print("Starting calculating permutation for multivariate rank matching...")
-            start_time = timeit.default_timer()
-            # z_combined_permute = z_combined.clone()
-            # inverse_perm = torch.arange(z_combined.shape[0], device=device)
-            z_combined_permute, inverse_perm = perfect_permute(z_combined, testdata)
-            end_time = timeit.default_timer()
-            print(
-                f"Finished calculating permutation for multivariate rank matching. Took {end_time - start_time:.2f} seconds."
-            )
-
-            # average distance between the latents and the test data, with rank matching but without perturbation
-            distance_latent_matching = torch.norm(
-                z_combined_permute - testdata, dim=1
-            ).mean()
-            distance_dict["distance_latent_matching"] = distance_latent_matching
-
-            # this perturb_pass needs to be fixed for mixed source_dist
-            # be careful about the edge cases when only one of them presents
-            z_norm, z_uniform = (
-                z_combined_permute[:, : z_norm.shape[1]],
-                z_combined_permute[:, z_norm.shape[1] :],
-            )
-
-            z_norm = perturb_pass_gaussian_laplace(z_norm, tau=perturb_dict["tau"])
-            z_uniform = perturb_pass_uniform_laplace(z_uniform, tau=perturb_dict["tau"])
-
-            z_norm = torch.tensor(z_norm, device=device)
-            z_uniform = torch.tensor(z_uniform, device=device)
-
-            distance_latent_perturb = torch.norm(
-                torch.cat((z_norm, z_uniform), dim=1) - testdata, dim=1
-            ).mean()
-            distance_dict["distance_latent_perturb"] = distance_latent_perturb
-
-            print(
-                f"Before rank matching and perturbation, the average distance between latents and test data is {distance_latent}."
-            )
-            print(
-                f"After rank matching but without perturbation, the average distance between latents and test data is {distance_latent_matching}."
-            )
-            print(
-                f"After rank matching and perturbation, the average distance between latents and test data is {distance_latent_perturb}."
-            )
-
-        log_z = torch.zeros(
-            (b, 0), device=device
-        ).float()  # this remains empty if there are no categorical features
-        if has_cat:
-            uniform_logits = torch.zeros(
-                (b, len(self.num_classes_expanded)), device=device
-            )
-            log_z = self.log_sample_categorical(
-                uniform_logits, uniforms=z_uniform
-            )  # logits to log_z (log of clamped one-hot encoding)
-            # log_z is the log of the clamped one-hot encoding, which are sampled from uniform noises via Gumbel-Softmax
-            # (cont.) it is something like log_z[0, :] = [-69.0776, -69.0776, 0, ...., -69.0776, 0, -69.0776, ..., -69.0776] with num_categorical_features 0 zeros (log 1)
-            # (cont.) this will be the input to the multinomial part of the MLP reverse process
-            # (cont.) the output of MLP is logits, but softmax is applied to get label -> one-hot encoding (clamped) -> log_z
-
         y = torch.multinomial(y_dist, num_samples=b, replacement=True)
         out_dict = {"y": y.long().to(device)}
         for i in reversed(range(0, self.num_timesteps)):
@@ -1057,25 +962,6 @@ class GaussianMultinomialDiffusion(torch.nn.Module):
         if has_cat:
             z_cat = ohe_to_categories(z_ohe, self.num_classes)
 
-        # calculate the distance between the generated sample and the test data for personalization
-        if perturb_dict is not None:
-            # testdata = testdata.to(device)
-            fakedata_perturb = torch.cat([z_norm, z_ohe], dim=1)
-            fakedata = fakedata_perturb[inverse_perm]
-            # fakedata_perturb, fakedata = fakedata_perturb.to(device), fakedata.to(
-            #     device
-            # )
-            distance = torch.norm(fakedata - testdata, dim=1).mean()
-            distance_perturb = torch.norm(fakedata_perturb - testdata, dim=1).mean()
-            distance_dict["original_distance"] = distance
-            distance_dict["original_distance_perturb"] = distance_perturb
-
-            print(
-                f"The average distance between none-PASS sample and test data is {distance}."
-            )
-            print(
-                f"The average distance between PASS sample and test data is {distance_perturb}."
-            )
 
         for key, value in distance_dict.items():
             distance_dict[key] = value.item()
@@ -1107,87 +993,6 @@ class GaussianMultinomialDiffusion(torch.nn.Module):
         # (cont.) for numerical features only (categorical features are created from uniform noises I think?)
         z_norm = torch.randn((b, self.num_numerical_features), device=device)
         z_uniform = None
-
-        # PASS with refeernce sample path pertrub_dict['testdatapath'] (if perturb_dict is not None)
-        if perturb_dict is not None:
-            distance_dict = {}
-            dict_save_path = os.path.join(os.getcwd(), parent_dir, "distance_dict.json")
-
-            X_num = torch.tensor(
-                dataset.X_num["test"], dtype=torch.float32, device=device
-            )
-            X_cat = torch.zeros(
-                (X_num.shape[0], 0), device=device
-            )  # empty if no categorical features
-            z_uniform = torch.zeros(
-                (b, 0), device=device
-            ).float()  # empty if no categorical features
-            if has_cat:
-                # one-hot encoding if categorical features exist
-                X_cat = torch.tensor(dataset.X_cat["test"], device=device)
-                X_cat = index_to_onehot(X_cat, self.num_classes)
-                z_uniform = torch.rand_like(X_cat, device=device)
-
-            testdata = torch.cat(
-                [X_num, X_cat], dim=1
-            )  # (b, self.num_numerical_features + self.num_onehot_features [optional + 1])
-
-            assert (
-                testdata.shape[0] == b
-            ), f"Number of samples in test data does not match number of samples to be generated, set batch_size=num_samples={testdata.shape[0]}."
-            z_combined = torch.cat([z_norm, z_uniform], dim=1)
-
-            assert (
-                testdata.shape[1] == z_combined.shape[1]
-            ), f"Number of features in test data ({testdata.shape[1]}) does not match number of features in z_combined ({z_combined.shape[1]})."
-
-            # average distance between the latents and the test data, without rank matching and perturbation
-            distance_latent = torch.norm(z_combined - testdata, dim=1).mean()
-            distance_dict["distance_latent"] = distance_latent
-
-            print("Starting calculating permutation for multivariate rank matching...")
-            start_time = timeit.default_timer()
-            # z_combined_permute = z_combined.clone()
-            # inverse_perm = torch.arange(z_combined.shape[0], device=device)
-            z_combined_permute, inverse_perm = perfect_permute(z_combined, testdata)
-            end_time = timeit.default_timer()
-            print(
-                f"Finished calculating permutation for multivariate rank matching. Took {end_time - start_time:.2f} seconds."
-            )
-
-            # average distance between the latents and the test data, with rank matching but without perturbation
-            distance_latent_matching = torch.norm(
-                z_combined_permute - testdata, dim=1
-            ).mean()
-            distance_dict["distance_latent_matching"] = distance_latent_matching
-
-            # this perturb_pass needs to be fixed for mixed source_dist
-            # be careful about the edge cases when only one of them presents
-            z_norm, z_uniform = (
-                z_combined_permute[:, : z_norm.shape[1]],
-                z_combined_permute[:, z_norm.shape[1] :],
-            )
-
-            z_norm = perturb_pass_gaussian_laplace(z_norm, tau=perturb_dict["tau"])
-            z_uniform = perturb_pass_uniform_laplace(z_uniform, tau=perturb_dict["tau"])
-
-            z_norm = torch.tensor(z_norm, device=device)
-            z_uniform = torch.tensor(z_uniform, device=device)
-
-            distance_latent_perturb = torch.norm(
-                torch.cat((z_norm, z_uniform), dim=1) - testdata, dim=1
-            ).mean()
-            distance_dict["distance_latent_perturb"] = distance_latent_perturb
-
-            print(
-                f"Before rank matching and perturbation, the average distance between latents and test data is {distance_latent}."
-            )
-            print(
-                f"After rank matching but without perturbation, the average distance between latents and test data is {distance_latent_matching}."
-            )
-            print(
-                f"After rank matching and perturbation, the average distance between latents and test data is {distance_latent_perturb}."
-            )
 
         log_z = torch.zeros(
             (b, 0), device=device
@@ -1233,33 +1038,6 @@ class GaussianMultinomialDiffusion(torch.nn.Module):
         z_cat = log_z
         if has_cat:
             z_cat = ohe_to_categories(z_ohe, self.num_classes)
-
-        # calculate the distance between the generated sample and the test data for personalization
-        if perturb_dict is not None:
-            # testdata = testdata.to(device)
-            fakedata_perturb = torch.cat([z_norm, z_ohe], dim=1)
-            fakedata = fakedata_perturb[inverse_perm]
-            # fakedata_perturb, fakedata = fakedata_perturb.to(device), fakedata.to(
-            #     device
-            # )
-            distance = torch.norm(fakedata - testdata, dim=1).mean()
-            distance_perturb = torch.norm(fakedata_perturb - testdata, dim=1).mean()
-            distance_dict["original_distance"] = distance
-            distance_dict["original_distance_perturb"] = distance_perturb
-
-            print(
-                f"The average distance between none-PASS sample and test data is {distance}."
-            )
-            print(
-                f"The average distance between PASS sample and test data is {distance_perturb}."
-            )
-
-            for key, value in distance_dict.items():
-                distance_dict[key] = value.item()
-
-            distance_dict["data_keyword"] = parent_dir.split("/")[-2]
-            if len(distance_dict) > 1:
-                lib.dump_json(distance_dict, dict_save_path)
 
         sample = torch.cat([z_norm, z_cat], dim=1).cpu()
         return sample, out_dict

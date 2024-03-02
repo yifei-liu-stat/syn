@@ -51,7 +51,7 @@ from utils_syninf import (
     blackbox_test_stat,
 )
 from utils_num import wasserstein_2_distance
-from utils_viz import compare_distributions_grid, heatmap_correlation
+from syninf.utils.utils_viz import compare_distributions_grid, heatmap_correlation
 
 
 # %%

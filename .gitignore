@@ -6,6 +6,14 @@ sentiment/data/*
 sentiment/lightning_logs/**/*
 sentiment/result/pred_dict.pkl
 
+# example: synthetic tabular data for regression
+conditional/ckpt/*
+conditional/data/*
+conditional/result/*
+
+
+# miscellaneous
+**/__pycache__/**/*
 
 # exceptions
 !**/.gitkeep

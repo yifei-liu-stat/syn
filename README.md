@@ -14,22 +14,26 @@ This repo is undergoing structural changes for better readability, but most rele
 
 The training codes for the tabular diffusion model are mainly adapted from "TabDDPM: Modelling Tabular Data with Diffusion Models" ([paper](https://arxiv.org/abs/2209.15421), [code](https://github.com/yandex-research/tab-ddpm))
 
-## Experiment (WIP)
+## Set Up Environment
 
 (Tested on Ubuntu 18.04, with 4 TITAN RTX GPUs and CUDA Version 10.2.)
 
 Create conda environment and install dependencies using the following commands:
 ```bash
+# export REPO_DIR=your/path/to/the/cloned/repo/syn
+export REPO_DIR=~/Documents/syn/
+cd $REPO_DIR
+
 conda env create -f environment.yml
 conda activate syn
 poetry install --no-root
 ```
 
 
-### Syn-Slm: Exploring Predictive Powers of Conditional Generative Models
+## Syn-Slm: Exploring Predictive Powers of Conditional Generative Models
 
 
-#### Sentiment Analysis
+### Sentiment Analysis
 
 Both training and testing results for fine-tuning GPT-3.5 can be found in `sentiment/result/gpt_result.csv`. 
 Note that we are using GPT-3.5 as a completion model, which is essentially a conditional generaotr, and is in alignment with the central idea of Syn-Slm.
@@ -55,7 +59,18 @@ python imdb_distilbert.py --predict
 python imdb_lstm.py
 ```
 
+## Regression Simulation with Tabular Data
 
+Compare with traditional approach (CatBoost) with different $\sigma$ in the underlying model.
+```bash
+cd conditional/
+
+python ablation_sigma.py --sigma 0.1 --device "cuda:0"
+```
+
+## Syn-Boost: Tune Synthetic Size to Achieve Optimal Performance (WIP)
+
+## Syn-Test: Tune Synthetic Size to Boost Powers (WIP)
 
 ## BibTex
 

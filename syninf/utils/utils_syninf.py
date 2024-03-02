@@ -1,12 +1,13 @@
 """
 Utils functions for SynInf inference.
 """
-
+import os
 import sys
 
+REPO_DIR = os.environ.get("REPO_DIR")
 
-sys.path.insert(0, "/home/liu00980/Documents/multimodal/tabular/tab-ddpm")
-sys.path.insert(0, "/home/liu00980/Documents/multimodal/tabular/tab-ddpm/scripts")
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm"))
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/scripts"))
 
 
 import numpy as np
@@ -25,10 +26,9 @@ from scripts.sample import sample
 from scripts.train import *
 
 
-TDDPM_DIR = "/home/liu00980/Documents/multimodal/tabular/tab-ddpm/"
-SYNINF_DIR = (
-    "/home/liu00980/Documents/multimodal/tabular/tab-ddpm/pass-inference/syninf"
-)
+TDDPM_DIR = os.path.join(REPO_DIR, "tab-ddpm")
+SYNINF_DIR = os.path.join(REPO_DIR, "tab-ddpm/pass-inference/syninf")
+
 
 
 def generate_sample(
