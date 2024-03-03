@@ -7,11 +7,20 @@ import torch.nn.functional as F
 import torch
 import math
 
-import numpy as np
-from .utils import *
-import lib
-import os
 import timeit
+
+import os
+REPO_DIR = os.environ.get("REPO_DIR")
+
+import sys
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm"))
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/scripts"))
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/tab_ddpm"))
+
+import numpy as np
+from utils import *
+import lib
+
 
 """
 Based in part on: https://github.com/lucidrains/denoising-diffusion-pytorch/blob/5989f4c77eafcdc6be0fb4739f0f277a6dd7f7d8/denoising_diffusion_pytorch/denoising_diffusion_pytorch.py#L281

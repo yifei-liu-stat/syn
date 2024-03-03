@@ -35,7 +35,7 @@ from utils.ddpm import MyDDPM, training_loop, generate_imputation
 import sys
 REPO_DIR = os.environ.get("REPO_DIR")
 
-sys.path.insert(0, os.path.join(REPO_DIR, "syninf/utils"))
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/syninf/utils"))
 from utils_syninf import catboost_pred_model, test_rmse
 
 

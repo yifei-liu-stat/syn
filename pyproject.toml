@@ -33,6 +33,9 @@ tqdm = "4.62.3"
 scipy = "1.8.0"
 setuptools = "^69.1.1"
 gdown = "^5.1.0"
+sqlalchemy = "1.4.46"
+python-dotenv = "^1.0.1"
+pot = "0.9.1"
 
 
 [build-system]

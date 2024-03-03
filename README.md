@@ -21,8 +21,7 @@ The training codes for the tabular diffusion model are mainly adapted from "TabD
 Create conda environment and install dependencies using the following commands:
 ```bash
 # export REPO_DIR=your/path/to/the/cloned/repo/syn
-export REPO_DIR=~/Documents/syn/
-cd $REPO_DIR
+export REPO_DIR=~Documents/syn/
 
 conda env create -f environment.yml
 conda activate syn
@@ -68,9 +67,44 @@ cd conditional/
 python ablation_sigma.py --sigma 0.1 --device "cuda:0"
 ```
 
-## Syn-Boost: Tune Synthetic Size to Achieve Optimal Performance (WIP)
+## Syn-Boost: Tune Synthetic Size to Achieve Optimal Performance
+
+```bash
+cd tab-ddpm/
+
+Download data.zip for data and exp.zip for configurations and checkpoints
+```
+
+### Real Datasets -- Identical Distribution
+Notebook **[prediction_pool_main.ipynb]** aggregates the results from Syn-Boost on eight benchmark tabular dataset.
+
+For this experiment, `optuna` is used to tune the Cat-Boost model trained on synthetic data. To get the result for each of the eight datasets, run (for example):
+```bash
+python synpred/prediction_pool_tune.py \
+    --dsname insurance \
+    --maxrho 20 \
+    --nratios 10 \
+    --ntrials 10 \
+    --device "cuda:0" \
+```
+A corresponding `optuna` study will be saved under the directory `ratio_optuna_studies` containing the tuning results of SynBoost.
+
+### Real Datasets -- Different Distribution
+*(WIP: set up REPO_DIR from jupyter notebook)*
+
+- Check notebook **[synpred/transfer_adult/transfer.ipynb]** for pre-trained model on Adult-Male, fine-tuned model on Adult-Female and model performance with various visualizations and distributional distances.
+- Notebook **[synpred/transfer_adult/synboost_transfer.ipynb]** implements Syn-Boost method using the fine-tuned tabular diffusion model.
+
+
+
+### Simulation Study
+*(WIP: set up REPO_DIR from jupyter notebook)*
+
+Notebook **[synpred/sim_prediction/pipeline.ipynb]** investigates the effect of pre-training size on performance of Syn-Boost, and compare it with CatBoost and Bayes error from the underlying distribution.
 
 ## Syn-Test: Tune Synthetic Size to Boost Powers (WIP)
+
+
 
 ## BibTex
 

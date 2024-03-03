@@ -2,8 +2,16 @@ import torch
 import numpy as np
 import zero
 import os
-from tab_ddpm.gaussian_multinomial_diffsuion import GaussianMultinomialDiffusion
-from tab_ddpm.utils import FoundNANsError
+
+REPO_DIR = os.environ.get("REPO_DIR")
+
+import sys
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm"))
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/scripts"))
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/tab_ddpm"))
+
+from gaussian_multinomial_diffsuion import GaussianMultinomialDiffusion
+
 from utils_train import get_model, make_dataset
 from lib import round_columns
 import lib
