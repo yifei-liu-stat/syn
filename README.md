@@ -7,8 +7,6 @@ Repo containing all raw codes for reproducing results from "Boosting Data Analyt
 
 
 
-
-
 This repo is undergoing structural changes for better readability, but most relevant codes for reproducing results can be accessed from:
 - [sentiment](https://github.com/yifei-liu-stat/syn/tree/main/sentiment): Sentiment analysis with Syn-Slm.
 - [conditional](https://github.com/yifei-liu-stat/syn/tree/main/conditional): Tabular data regression with Syn-Slm.
@@ -17,6 +15,13 @@ This repo is undergoing structural changes for better readability, but most rele
 
 
 The training codes for the tabular diffusion model are mainly adapted from "TabDDPM: Modelling Tabular Data with Diffusion Models" ([paper](https://arxiv.org/abs/2209.15421), [code](https://github.com/yandex-research/tab-ddpm))
+
+
+## To-Do List
+- [ ] Polish the Syn-Boost transfer learning example on Adult dataset
+- [ ] Polish the Syn-Test examples
+- [ ] Add Makefile for reproducing the results with a pipeline for each example
+
 
 ## Set Up Environment
 
