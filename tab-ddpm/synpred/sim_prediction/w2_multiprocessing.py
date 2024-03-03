@@ -3,26 +3,24 @@ Calculate 2-Wasserstein distance between synthetic data and true data with multi
 """
 
 SEED = 2023
-SYNINF_DIR = (
-    "/home/liu00980/Documents/multimodal/tabular/tab-ddpm/pass-inference/syninf"
-)
 
+
+import os
+REPO_DIR = os.environ.get("REPO_DIR")
+TDDPM_DIR = os.path.join(REPO_DIR, "tab-ddpm")
+
+import multiprocessing as mp
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import quantile_transform
-import multiprocessing as mp
 
 from sample import TrueSampler
 
-
 import sys
+sys.path.insert(0, os.path.join(TDDPM_DIR, "utils/"))
 
-sys.path.insert(0, SYNINF_DIR)
-
-from utils_syninf import (
-    generate_sample,
-    concat_data,
-)
+from utils_tabddpm import generate_sample
+from utils_syn import concat_data
 from utils_num import wasserstein_2_distance
 
 

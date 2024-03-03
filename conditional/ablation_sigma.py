@@ -32,11 +32,12 @@ from utils.utils_model import MLPDiffusionContinuous
 from utils.ddpm import MyDDPM, training_loop, generate_imputation
 
 
-import sys
 REPO_DIR = os.environ.get("REPO_DIR")
 
-sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/syninf/utils"))
-from utils_syninf import catboost_pred_model, test_rmse
+import sys
+sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/utils"))
+
+from utils_syn import catboost_pred_model, test_rmse
 
 
 seed = 2024

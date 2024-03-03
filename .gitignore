@@ -1,7 +1,14 @@
 
 # example: syn-boost
+## eight real dataset: identical distribution
 tab-ddpm/data/**/*
 tab-ddpm/exp/**/*
+
+## transfer learning from Adult-Male to Adult-Female
+
+
+## simulation
+tab-ddpm/synpred/sim_prediction/temp/*
 
 
 

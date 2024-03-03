@@ -1,6 +1,6 @@
 seed = 0
 parent_dir = "./ckpt/reg_5000_finetuned"
-real_data_path = "/home/liu00980/Documents/multimodal/tabular/tab-ddpm/data/reg_raw"
+real_data_path = "/home/liu00980/Documents/syn/tab-ddpm/data/reg_raw"
 num_numerical_features = 7
 model_type = "mlp"
 device = "cuda:0"

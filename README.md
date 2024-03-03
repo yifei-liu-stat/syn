@@ -21,7 +21,7 @@ The training codes for the tabular diffusion model are mainly adapted from "TabD
 Create conda environment and install dependencies using the following commands:
 ```bash
 # export REPO_DIR=your/path/to/the/cloned/repo/syn
-export REPO_DIR=~Documents/syn/
+export REPO_DIR=~/Documents/syn/
 
 conda env create -f environment.yml
 conda activate syn
@@ -98,9 +98,22 @@ A corresponding `optuna` study will be saved under the directory `ratio_optuna_s
 
 
 ### Simulation Study
-*(WIP: set up REPO_DIR from jupyter notebook)*
 
-Notebook **[synpred/sim_prediction/pipeline.ipynb]** investigates the effect of pre-training size on performance of Syn-Boost, and compare it with CatBoost and Bayes error from the underlying distribution.
+Notebook **[evaluate.ipynb]** evaluates the performance of pre-trained generator and investifate the effect of generational error on the performance of Syn-Boost.
+To reproduce the results,
+
+```bash
+cd synpred/sim_prediction/
+
+# Specify pre-training size, pre-train the model and fine-tune it on the raw training data
+python train.py
+
+# Syn-Boost tuning versus CatBoost
+python synboost.py
+
+# 2-Wasserstein distance of the pre-trained/fine-tuned generators
+python w2_multiprocessing.py
+```
 
 ## Syn-Test: Tune Synthetic Size to Boost Powers (WIP)
 
