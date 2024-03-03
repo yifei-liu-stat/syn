@@ -9,7 +9,11 @@ Repo containing all raw codes for reproducing results from "Boosting Data Analyt
 
 
 
-This repo is undergoing structural changes for better readability, but most relevant codes for reproducing results can be found in folders [tab-ddpm/syn](https://github.com/yifei-liu-stat/syn/tree/main/tab-ddpm/syn) and [conditional](https://github.com/yifei-liu-stat/syn/tree/main/conditional).
+This repo is undergoing structural changes for better readability, but most relevant codes for reproducing results can be accessed from:
+- [sentiment](https://github.com/yifei-liu-stat/syn/tree/main/sentiment): Sentiment analysis with Syn-Slm.
+- [conditional](https://github.com/yifei-liu-stat/syn/tree/main/conditional): Tabular data regression with Syn-Slm.
+- [tab-ddpm/synpred](https://github.com/yifei-liu-stat/syn/tree/main/tab-ddpm/synpred): Syn-Boost for predictions on benchmark datasets and simulations.
+- [tab-ddpm/syninf](https://github.com/yifei-liu-stat/syn/tree/main/tab-ddpm/syninf): Syn-Test for inference on real datasets and simulations.
 
 
 The training codes for the tabular diffusion model are mainly adapted from "TabDDPM: Modelling Tabular Data with Diffusion Models" ([paper](https://arxiv.org/abs/2209.15421), [code](https://github.com/yandex-research/tab-ddpm))
@@ -34,7 +38,7 @@ poetry install --no-root
 
 ### Sentiment Analysis
 
-Both training and testing results for fine-tuning GPT-3.5 can be found in `sentiment/result/gpt_result.csv`. 
+Both training and testing results for fine-tuning GPT-3.5 can be found in [gpt_result.csv](https://github.com/yifei-liu-stat/syn/blob/main/sentiment/result/gpt_result.csv). 
 Note that we are using GPT-3.5 as a completion model, which is essentially a conditional generaotr, and is in alignment with the central idea of Syn-Slm.
 
 For other approaches, the results can be obtained via:
@@ -76,9 +80,9 @@ Download data.zip for data and exp.zip for configurations and checkpoints
 ```
 
 ### Real Datasets -- Identical Distribution
-Notebook **[prediction_pool_main.ipynb]** aggregates the results from Syn-Boost on eight benchmark tabular dataset.
+Notebook [prediction_pool_main.ipynb](https://github.com/yifei-liu-stat/syn/blob/main/tab-ddpm/synpred/prediction_pool_main.ipynb) aggregates the results from Syn-Boost on eight benchmark tabular dataset.
 
-For this experiment, `optuna` is used to tune the Cat-Boost model trained on synthetic data. To get the result for each of the eight datasets, run (for example):
+For this experiment, [optuna](https://github.com/optuna/optuna) is used to tune the Cat-Boost model trained on synthetic data. To get the result for each of the eight datasets, run (for example):
 ```bash
 python synpred/prediction_pool_tune.py \
     --dsname insurance \
@@ -99,7 +103,7 @@ A corresponding `optuna` study will be saved under the directory `ratio_optuna_s
 
 ### Simulation Study
 
-Notebook **[evaluate.ipynb]** evaluates the performance of pre-trained generator and investifate the effect of generational error on the performance of Syn-Boost.
+Notebook [evaluate.ipynb](https://github.com/yifei-liu-stat/syn/blob/main/tab-ddpm/synpred/sim_prediction/evaluate.ipynb) evaluates the performance of pre-trained generator and investifate the effect of generational error on the performance of Syn-Boost.
 To reproduce the results,
 
 ```bash
