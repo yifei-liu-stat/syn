@@ -6,7 +6,7 @@ tab-ddpm/exp/**/*
 
 ## transfer learning from Adult-Male to Adult-Female
 tab-ddpm/synpred/transfer_adult/ddpm_sample_test/*
-# tab-ddpm/synpred/transfer_adult/*.pkl
+tab-ddpm/synpred/transfer_adult/*.pkl
 
 
 ## simulation
