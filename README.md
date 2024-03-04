@@ -18,7 +18,6 @@ The training codes for the tabular diffusion model are mainly adapted from "TabD
 
 
 ## To-Do List
-- [ ] Polish the Syn-Boost transfer learning example on Adult dataset
 - [ ] Polish the Syn-Test examples
 - [ ] Add Makefile for reproducing the results with a pipeline for each example
 
@@ -81,7 +80,13 @@ python ablation_sigma.py --sigma 0.1 --device "cuda:0"
 ```bash
 cd tab-ddpm/
 
-Download data.zip for data and exp.zip for configurations and checkpoints
+gdown 'https://drive.google.com/file/d/1j513rf5RGT4I-hnyu2aUic-s76nps8EO/view?usp=drive_link' --fuzzy
+unzip data.zip
+
+gdown 'https://drive.google.com/file/d/1SumvPWtcWbvWxtED9AzLORBGGCLz9H0a/view?usp=drive_link' --fuzzy
+unzip exp.zip
+
+rm -rf *.zip
 ```
 
 ### Real Datasets -- Identical Distribution
@@ -99,10 +104,20 @@ python synpred/prediction_pool_tune.py \
 A corresponding `optuna` study will be saved under the directory `ratio_optuna_studies` containing the tuning results of SynBoost.
 
 ### Real Datasets -- Different Distribution
-*(WIP: set up REPO_DIR from jupyter notebook)*
 
-- Check notebook **[synpred/transfer_adult/transfer.ipynb]** for pre-trained model on Adult-Male, fine-tuned model on Adult-Female and model performance with various visualizations and distributional distances.
-- Notebook **[synpred/transfer_adult/synboost_transfer.ipynb]** implements Syn-Boost method using the fine-tuned tabular diffusion model.
+Notebook **[evaluate.ipynb]** includes
+- Evaluation results from the fine-tuned generator on Adult-Female data, using marginal distributions, pairwise correlations, as well as various distributional distances.
+- SynBoost tuning results, along with some reference metrics.
+
+```bash
+cd synpred/transfer_adult
+
+# Generate dataframes for evaluation purpose
+python gen_eval_sample.py
+
+# Perform Syn-Boost tuning with fine-tuned generator
+python synboost.py
+```
 
 
 
