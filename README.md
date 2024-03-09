@@ -105,9 +105,10 @@ A corresponding `optuna` study will be saved under the directory `ratio_optuna_s
 
 ### Real Datasets -- Different Distribution
 
-Notebook **[evaluate.ipynb]** includes
+Notebook [evaluate.ipynb](https://github.com/yifei-liu-stat/syn/blob/main/tab-ddpm/synpred/transfer_adult/evaluate.ipynb) includes
 - Evaluation results from the fine-tuned generator on Adult-Female data, using marginal distributions, pairwise correlations, as well as various distributional distances.
 - SynBoost tuning results, along with some reference metrics.
+- To reproduce the results visualized in the notebook:
 
 ```bash
 cd synpred/transfer_adult
