@@ -12,8 +12,6 @@ import torch
 
 import random
 import numpy as np
-import pandas as pd
-from sklearn.preprocessing import quantile_transform
 from scipy.stats import norm
 
 from pytorch_lightning import seed_everything
@@ -24,10 +22,6 @@ import shutil
 from tqdm import tqdm
 import json
 import pickle
-
-import seaborn as sns
-import matplotlib.pyplot as plt
-
 
 from sample import TrueSampler
 
@@ -292,11 +286,9 @@ tddpm_kwargs_twin = {
 
 # Generate synthetic samples ONCE AND FOR ALL for twin folders
 
-regenerate = False  # whether to regenerate synthetic samples
+regenerate = True  # whether to regenerate synthetic samples
 
 if regenerate:
-    seed_everything(expconfig.seed)
-
     for twin_kw in ["twin_1", "twin_2"]:
         temp_sample_kwargs = deepcopy(tddpm_kwargs_twin[twin_kw])
         temp_sample_kwargs["temp_parent_dir"] = f"./ckpt/{expconfig.keyword}_{twin_kw}/"
@@ -311,11 +303,11 @@ if regenerate:
             **temp_sample_kwargs,
         )
         print("Synthetic sample saved at", temp_sample_kwargs["temp_parent_dir"])
-else:
-    df_twin_1 = concat_data(f"./ckpt/{expconfig.keyword}_twin_1/")
-    print("Size for twin_1:", df_twin_1.shape)
-    df_twin_2 = concat_data(f"./ckpt/{expconfig.keyword}_twin_2/")
-    print("Size for twin_2:", df_twin_2.shape)
+
+df_twin_1 = concat_data(f"./ckpt/{expconfig.keyword}_twin_1/")
+print("Size for twin_1:", df_twin_1.shape)
+df_twin_2 = concat_data(f"./ckpt/{expconfig.keyword}_twin_2/")
+print("Size for twin_2:", df_twin_2.shape)
 
 
 # Get f* and g* for constructing test statistic

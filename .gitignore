@@ -13,6 +13,12 @@ tab-ddpm/synpred/transfer_adult/*.pkl
 tab-ddpm/synpred/sim_prediction/temp/*
 
 
+# example: syn-test
+
+## simulation
+tab-ddpm/syninf/sim_inference/ckpt/inf*/**/*
+tab-ddpm/syninf/sim_inference/results/*result*
+
 
 # example: sentiment analysis
 sentiment/ckpt/*

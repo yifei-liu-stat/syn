@@ -148,8 +148,11 @@ python w2_multiprocessing.py
 ```bash
 cd syninf/sim_inference
 
-
+# Prepare the data, pre-train/fine-tune generators and perform Syn-Test
+python syntest.py
 ```
+
+Notebook **[evaluate.ipynb]** aggregates and visualizes Syn-Test results including the ratio tuning curve, estimated null distribution, as well as the distribution of P-values.
 
 ## BibTex
 
