@@ -1,5 +1,5 @@
 """
-Utils functions for SynInf inference.
+Utils functions for tabular diffusion model training and sampling.
 """
 import os
 import numpy as np

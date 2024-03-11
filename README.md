@@ -143,6 +143,13 @@ python w2_multiprocessing.py
 ## Syn-Test: Tune Synthetic Size to Boost Powers (WIP)
 
 
+### Simulation Study
+
+```bash
+cd syninf/sim_inference
+
+
+```
 
 ## BibTex
 

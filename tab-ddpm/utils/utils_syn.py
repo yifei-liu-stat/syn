@@ -633,3 +633,56 @@ def bias_correction(
         type1_corrected = type1 - bias_type1
 
     return null_dist_corrected, type1_corrected
+
+
+
+
+
+def get_p_values(null_ecdf, t_null_ecdf, direction = "greater"):
+    """
+    Get P-values based on one reference null distribution and a distribution of the test statistic under H0
+    - null_ecdf: empirical CDF of the reference null distribution, used to get p-values
+    - t_null_ecdf: empirical CDF of the test statistic under H0
+    """
+    if direction == "greater":
+        p_values = [np.mean(null_ecdf >= t) for t in t_null_ecdf]
+    elif direction == "less":
+        p_values = [np.mean(null_ecdf <= t) for t in t_null_ecdf]
+    elif direction == "two-sided":
+        p_values = [2 * min(np.mean(null_ecdf >= t), np.mean(null_ecdf <= t)) for t in t_null_ecdf]
+    
+    return p_values
+
+
+def soft_type_i(p_values, alpha = 0.05, epsilon = 0.01):
+    """
+    Type-I error rate with soft thresholding based on p-values
+    - p_values: p-values obtained under the null hypothesis
+    """
+    type_i_error = np.mean(np.array(p_values) <= alpha - epsilon)
+    return type_i_error
+
+
+def soft_type_i_errors(result_dict, direction = "greater", alpha = 0.05, epsilon = 0.01):
+    """
+    Type-I errors w.r.t. synthetic-to-raw ratio based on result_dict.
+    """
+    rho_list, type_i_error_list = [], []
+    for rho_str in result_dict.keys():
+        p_values_twin_1 = get_p_values(
+            np.array(result_dict[rho_str]["twin_1"]["test_stat_null"]),
+            np.array(result_dict[rho_str]["twin_2"]["test_stat_null"]),
+            direction = direction,
+        )
+        p_values_twin_2 = get_p_values(
+            np.array(result_dict[rho_str]["twin_2"]["test_stat_null"]),
+            np.array(result_dict[rho_str]["twin_1"]["test_stat_null"]),
+            direction = direction
+        )
+        p_values_combined = [combine_Hommel([p1, p2]) for p1, p2 in zip(p_values_twin_1, p_values_twin_2)]
+        
+        rho_list.append(float(rho_str))
+        type_i_error_list.append(soft_type_i(p_values_combined, alpha = alpha, epsilon = epsilon))
+    
+    return rho_list, type_i_error_list, p_values_combined
+        
