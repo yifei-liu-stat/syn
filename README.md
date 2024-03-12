@@ -18,7 +18,6 @@ The training codes for the tabular diffusion model are mainly adapted from "TabD
 
 
 ## To-Do List
-- [ ] Polish the Syn-Test examples
 - [ ] Add Makefile for reproducing the results with a pipeline for each example
 
 
@@ -140,7 +139,27 @@ python synboost.py
 python w2_multiprocessing.py
 ```
 
-## Syn-Test: Tune Synthetic Size to Boost Powers (WIP)
+## Syn-Test: Tune Synthetic Size to Boost Powers
+
+Under individual directories, one can find notebooks that aggregate and visualizes Syn-Test results including the ratio tuning curve, estimated null distribution and others.
+
+### Real Datasets -- California
+
+```bash
+cd syninf/
+
+# Tune synthetic-to-raw ratio based on fine-tuend generators
+python syntest_california.py
+```
+
+### Real Datasets -- Adult
+
+```bash
+cd syninf/
+
+# Tune synthetic-to-raw ratio based on fine-tuend generators
+python syntest_adult.py
+```
 
 
 ### Simulation Study
@@ -151,8 +170,6 @@ cd syninf/sim_inference
 # Prepare the data, pre-train/fine-tune generators and perform Syn-Test
 python syntest.py
 ```
-
-Notebook **[evaluate.ipynb]** aggregates and visualizes Syn-Test results including the ratio tuning curve, estimated null distribution, as well as the distribution of P-values.
 
 ## BibTex
 

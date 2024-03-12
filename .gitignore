@@ -1,41 +1,50 @@
 
-# example: syn-boost
-## eight real dataset: identical distribution
+# Example: syn-boost
+
+## Eight real dataset: identical distribution
 tab-ddpm/data/**/*
 tab-ddpm/exp/**/*
 
-## transfer learning from Adult-Male to Adult-Female
+## Adult
 tab-ddpm/synpred/transfer_adult/ddpm_sample_test/*
 tab-ddpm/synpred/transfer_adult/*.pkl
 
 
-## simulation
+## Simulation
 tab-ddpm/synpred/sim_prediction/temp/*
 
 
-# example: syn-test
+# Example: syn-test
+tab-ddpm/syninf/prep_twin.py
+tab-ddpm/syninf/prep_model.py
 
-## simulation
+## California
+tab-ddpm/syninf/california/syngen_inf_result/*
+
+## Adult
+tab-ddpm/syninf/adult_female_3000/syngen_inf_result/*
+
+## Aimulation
 tab-ddpm/syninf/sim_inference/ckpt/inf*/**/*
 tab-ddpm/syninf/sim_inference/results/*result*
 
 
-# example: sentiment analysis
+# Example: sentiment analysis
 sentiment/ckpt/*
 sentiment/data/*
 sentiment/lightning_logs/**/*
 sentiment/result/pred_dict.pkl
 
-# example: synthetic tabular data for regression
+# Example: synthetic tabular data for regression
 conditional/ckpt/*
 conditional/data/*
 conditional/result/*
 
 
-# miscellaneous
+# Miscellaneous
 **/__pycache__/**/*
 **/catboost_info/**/*
 **/temp/**/*
 
-# exceptions
+# Exceptions
 !**/.gitkeep

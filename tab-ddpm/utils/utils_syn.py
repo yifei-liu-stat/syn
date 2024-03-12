@@ -19,8 +19,7 @@ from typing import Optional, List, Dict, Tuple
 import json
 
 
-# To be changed upon modifying syninf
-SYNINF_DIR = None
+
 
 
 def concat_data(
@@ -165,9 +164,7 @@ def catboost_pred_model(
         null_features_list,
     )
 
-    # NOTE THAT in the previous version the following parameters are used (especially for regression):
-    # classification: iterations=5000, loss_function="Logloss", allow_writing_files=False
-    # regression: iterations=5000, loss_function="MAE", allow_writing_files=False
+
     if is_y_cat:
         model = CatBoostClassifier(**kwargs, allow_writing_files=False)
     else:
@@ -232,7 +229,7 @@ def load_pred_models(
     dataset_name: str,
     null_features_list: List[str],
     is_y_cat: bool = False,
-    
+    root_dir: str = ".",
     **kwargs,
 ) -> dict:
     """
@@ -243,7 +240,7 @@ def load_pred_models(
     suffix = "_".join(null_features_list)
 
     pred_model_dict = {}
-    pred_ckpt_folder = os.path.join(SYNINF_DIR, dataset_name, f"pred_model_ckpt")
+    pred_ckpt_folder = os.path.join(root_dir, dataset_name, f"pred_model_ckpt")
 
     full_ckpt_path = os.path.join(pred_ckpt_folder, f"model_full_{suffix}.ckpt")
     full_model = CatBoostRegressor() if not is_y_cat else CatBoostClassifier()
@@ -302,7 +299,7 @@ def catboost_null_models(
     return model_ckpt_path_dict
 
 
-def load_twin_null_models(dataset_name: str, null_features_list: List[str]) -> dict:
+def load_twin_null_models(dataset_name: str, null_features_list: List[str], root_dir: str = ".") -> dict:
     """
     Load null model checkpoints for twin 1 and twin 2. This function will load ckpt in:
 
@@ -322,7 +319,7 @@ def load_twin_null_models(dataset_name: str, null_features_list: List[str]) -> d
     twin_null_model_dict = {"twin_1": {}, "twin_2": {}}
     for null_feature in null_features_list:
         null_model_ckpt_path_twin_1 = os.path.join(
-            SYNINF_DIR,
+            root_dir,
             f"{dataset_name}/null_model_ckpt/twin_1_{suffix}/{null_feature}.ckpt",
         )
         temp_model = CatBoostRegressor()
@@ -330,7 +327,7 @@ def load_twin_null_models(dataset_name: str, null_features_list: List[str]) -> d
         twin_null_model_dict["twin_1"][null_feature] = temp_model
 
         null_model_ckpt_path_twin_2 = os.path.join(
-            SYNINF_DIR,
+            root_dir,
             f"{dataset_name}/null_model_ckpt/twin_2_{suffix}/{null_feature}.ckpt",
         )
         temp_model = CatBoostRegressor()
