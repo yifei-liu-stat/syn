@@ -24,7 +24,7 @@ tab-ddpm/syninf/california/syngen_inf_result/*
 ## Adult
 tab-ddpm/syninf/adult_female_3000/syngen_inf_result/*
 
-## Aimulation
+## Simulation
 tab-ddpm/syninf/sim_inference/ckpt/inf*/**/*
 tab-ddpm/syninf/sim_inference/results/*result*
 
@@ -45,6 +45,8 @@ conditional/result/*
 **/__pycache__/**/*
 **/catboost_info/**/*
 **/temp/**/*
+# tab-ddpm/data/**/*
+# tab-ddpm/exp/**/*
 
 # Exceptions
 !**/.gitkeep

@@ -1,1 +1,0 @@
-{"task_type": "regression", "name": "reg_raw", "id": "reg_raw", "train_size": 500, "val_size": 200, "test_size": 1000, "n_num_features": 7}

@@ -1,1 +1,0 @@
-{"task_type": "regression", "name": "inf_10000", "id": "inf_10000", "train_size": 10000, "val_size": 200, "test_size": 1000, "n_num_features": 8}
