@@ -19,6 +19,8 @@ from typing import Optional, List, Dict, Tuple
 import json
 
 
+from sklearn.metrics import classification_report
+from sklearn import metrics
 
 
 
@@ -224,6 +226,56 @@ def test_acc(
     acc = np.mean(preds == true_y)
     return acc
 
+
+def test_scores_catboost(
+    catmodel: CatBoostClassifier,
+    test_df: pd.DataFrame,
+    **kwargs,
+):
+    """
+    Evaluation metrics on test dataset using a trained CatBoost classifier. Provided metrics include:
+    - accuracy
+    - F1 score
+    - AUROC
+    - AUPRC
+    """
+
+    temp_df = test_df.copy()
+    test_df_pool = catboost_prepare_pool(
+        temp_df,
+        num_features_list=kwargs["num_features_list"],
+        cat_features_list=kwargs["cat_features_list"],
+        y_feature=kwargs["y_feature"],
+    )
+
+    probs = catmodel.predict(test_df_pool, prediction_type="Probability")
+    preds = catmodel.predict(test_df_pool)
+    preds = np.array(preds, dtype=int)
+
+    true_y = temp_df[kwargs["y_feature"]].to_numpy()
+    true_y = np.array(true_y, dtype=int)
+
+    # overall accuracy
+    acc = np.mean(preds == true_y)
+    
+    # macro F1 score
+    temp = classification_report(true_y, preds, digits=3, output_dict=True)
+    f1_macro = temp["macro avg"]["f1-score"]
+    
+    # auroc
+    fpr, tpr, thresholds = metrics.roc_curve(true_y, probs[:, 1], pos_label=1)
+    auroc = metrics.auc(fpr, tpr)
+    
+    # auprc
+    pr, re, thresholds = metrics.precision_recall_curve(true_y, probs[:, 1], pos_label=1)
+    auprc = metrics.auc(re, pr)
+
+    return {
+        "accuracy": acc,
+        "f1_macro": f1_macro,
+        "auroc": auroc,
+        "auprc": auprc,
+    }
 
 def load_pred_models(
     dataset_name: str,
