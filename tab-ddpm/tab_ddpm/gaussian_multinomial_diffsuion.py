@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/scripts"))
 sys.path.insert(0, os.path.join(REPO_DIR, "tab-ddpm/tab_ddpm"))
 
 import numpy as np
-from utils import *
+from utils_misc import *
 import lib
 
 
@@ -118,7 +118,7 @@ class GaussianMultinomialDiffusion(torch.nn.Module):
         self.num_timesteps = num_timesteps
         self.parametrization = parametrization
         self.scheduler = scheduler
-
+        
         alphas = 1.0 - get_named_beta_schedule(scheduler, num_timesteps)
         alphas = torch.tensor(alphas.astype("float64"))
         betas = 1.0 - alphas

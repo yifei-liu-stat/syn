@@ -45,6 +45,7 @@ conditional/result/*
 **/__pycache__/**/*
 **/catboost_info/**/*
 **/temp/**/*
+tab-ddpm/self-correct*
 # tab-ddpm/data/**/*
 # tab-ddpm/exp/**/*
 
